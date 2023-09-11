@@ -1,2 +1,2 @@
-let message: string = 'Wanna Play?';
+const message = 'Wanna Play?';
 console.log(message);

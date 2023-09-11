@@ -1,5 +1,5 @@
-import * as readline from "node:readline";
-import { stdin as input, stdout as output } from "node:process";
+import * as readline from "node:readline/promises";
+import { stdin as input, stdout as output, stdout } from "node:process";
 
 //createInterface is a callable of Node's readLine module (see documentation)
 //In this way, we can connect stdin and stdout
@@ -9,21 +9,21 @@ function generateComputerMove() {
   return String(Math.round(Math.random() * 2));
 }
 
-export function play(question: string) {
-  let computerMove = generateComputerMove();
-  rl.question(question, (userMove) => {
-    rl.write(`You choosed:  ${userMove}\nComputer choosed:  ${computerMove}\n`);
-    if (userMove == computerMove) {
-      rl.write(`Draw!\n`);
-    } else if (
-      (userMove === "0" && computerMove === "2") ||
-      (userMove === "2" && computerMove === "1") ||
-      (userMove === "1" && computerMove === "0")
-    ) {
-      rl.write(`You win!\n`);
-    } else {
-      rl.write(`You lose :<\n`);
-    } 
-    rl.close();
-  });
+export async function play(question: string) {
+  const computerMove = generateComputerMove();
+  const userMove = await rl.question(question);
+
+  stdout.write(`You chose:  ${userMove}\nComputer chosed:  ${computerMove}\n`);
+  if (userMove === computerMove) {
+    stdout.write(`Draw!\n`);
+  } else if (
+    (userMove === "0" && computerMove === "2") ||
+    (userMove === "2" && computerMove === "1") ||
+    (userMove === "1" && computerMove === "0")
+  ) {
+    stdout.write(`You win!\n`);
+  } else {
+    stdout.write(`You lose :<\n`);
+  }
+  rl.close();
 }

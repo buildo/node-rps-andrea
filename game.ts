@@ -1,26 +1,25 @@
 import * as readline from "node:readline/promises";
 import { match, P } from "ts-pattern";
-import { read, MoveEnum, Moves } from "./model/move";
-import { ResultEnum, Result } from "./model/result";
+import { read, MoveN } from "./model/move";
+import { Result } from "./model/result";
 
 export function generateComputerMove() {
   return read(String(Math.round(Math.random() * 2)));
 }
 
-export function playLogic(userMove: MoveEnum, computerMove: MoveEnum) {
+export function playLogic(userMove: MoveN, computerMove: MoveN) {
   return match([userMove, computerMove])
-    .returnType<ResultEnum>()
     .with(
-      [Moves.Rock, Moves.Scissors],
-      [Moves.Scissors, Moves.Paper],
-      [Moves.Paper, Moves.Rock],
-      () => Result.WIN
+      ["Rock", "Scissors"],
+      ["Scissors", "Paper"],
+      ["Paper", "Rock"],
+      () => "You Win!!!"
     )
     .with(
       P.when(() => userMove === computerMove),
-      () => Result.DRAW
+      () => "It's a Draw!"
     )
-    .otherwise(() => Result.LOSE);
+    .otherwise(() => "You lose :< ");
 }
 
 export async function play(

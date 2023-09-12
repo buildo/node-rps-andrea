@@ -1,24 +1,27 @@
-import { match, P } from "ts-pattern";
+import { match } from "ts-pattern";
 import { z } from "zod";
 
-export enum Moves {
-  Rock = "Rock",
-  Paper = "Paper",
-  Scissors = "Scissors",
-}
+const MoveNames = z.enum(["Rock", "Paper", "Scissors"]);
+export type MoveN = z.infer<typeof MoveNames>;
 
-const MoveEnum = z.nativeEnum(Moves);
-export type MoveEnum = z.infer<typeof MoveEnum>;
+export const MoveCodes = z.enum(["0", "1", "2"]).transform<MoveN>((val) =>
+  match(val)
+    .returnType<MoveN>()
+    .with("0", () => "Rock")
+    .with("1", () => "Paper")
+    .with("2", () => "Scissors")
+    .exhaustive()
+);
 
-export function read(input: string): MoveEnum {
-  return match(input)
-    .returnType<MoveEnum>()
-    .with("0", () => MoveEnum.parse(Moves.Rock))
-    .with("1", () => MoveEnum.parse(Moves.Paper))
-    .with("2", () => MoveEnum.parse(Moves.Scissors))
-    .otherwise(() => {
-      throw new RangeError(
-        "Sorry, you must enter a valid move (0, 1 or 2). Try again"
-      );
-    });
+export type MoveC = z.infer<typeof MoveCodes>;
+
+export function read(input: string): MoveN {
+  const res = MoveCodes.safeParse(input);
+  if (res.success) {
+    return res.data;
+  } else {
+    throw new RangeError(
+      "Sorry, you must enter a valid move (0, 1 or 2). Try again"
+    );
+  }
 }

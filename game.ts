@@ -1,27 +1,26 @@
 import * as readline from "node:readline/promises";
 import { match, P } from "ts-pattern";
-import { read, Move } from "./model/move";
-import { Result } from "./model/result";
+import { read, MoveEnum, Moves } from "./model/move";
+import { ResultEnum, Result } from "./model/result";
 
 export function generateComputerMove() {
   return read(String(Math.round(Math.random() * 2)));
 }
 
-export function playLogic(userMove: Move, computerMove: Move) {
+export function playLogic(userMove: MoveEnum, computerMove: MoveEnum) {
   return match([userMove, computerMove])
-    .returnType<Result>()
+    .returnType<ResultEnum>()
     .with(
-      ["Rock", "Scissors"],
-      ["Scissors", "Paper"],
-      ["Paper", "Rock"],
-      () => "Win"
+      [Moves.Rock, Moves.Scissors],
+      [Moves.Scissors, Moves.Paper],
+      [Moves.Paper, Moves.Rock],
+      () => Result.WIN
     )
-
     .with(
       P.when(() => userMove === computerMove),
-      () => "Draw"
+      () => Result.DRAW
     )
-    .otherwise(() => "Lose");
+    .otherwise(() => Result.LOSE);
 }
 
 export async function play(
@@ -37,7 +36,9 @@ export async function play(
   );
 
   output.write(`You chose:  ${userMove}\nComputer chosed:  ${computerMove}\n`);
-  output.write("The result is... " + playLogic(userMove, computerMove) + " !");
+  output.write(
+    "The result is... " + playLogic(userMove, computerMove) + " !\n"
+  );
 
   rl.close();
 }

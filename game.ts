@@ -1,6 +1,8 @@
 import * as readline from "node:readline/promises";
 import { match, P } from "ts-pattern";
 import { read, Move } from "./model/move";
+import { lastGame, logRes } from "./sql/db";
+import { results } from "./model/result";
 
 export function generateComputerMove() {
   return read(String(Math.round(Math.random() * 2)));
@@ -26,16 +28,25 @@ export async function play(
 ) {
   const rl = readline.createInterface({ input, output });
   const computerMove = generateComputerMove();
+  const lastG = results.safeParse(await lastGame());
+  if (lastG.success) {
+    rl.write("Our last game timestamp is : " + lastG.data.log_game + "\n");
+    rl.write(
+      "and the game finished with this result : " + lastG.data.result + "\n"
+    );
+  }
+
   const userMove = read(
     await rl.question(
       "Wanna play? Your move (0: Rock, 1: Paper, 2: Scissors) \n"
     )
   );
 
-  output.write(`You chose:  ${userMove}\nComputer chosed:  ${computerMove}\n`);
-  output.write(
-    "The result is... " + playLogic(userMove, computerMove) + " !\n"
-  );
+  const res = playLogic(userMove, computerMove);
+  logRes(res);
+
+  output.write(`You chose:  ${userMove}\nComputer chose:  ${computerMove}\n`);
+  output.write("The result is... " + res + " !\n");
 
   rl.close();
 }

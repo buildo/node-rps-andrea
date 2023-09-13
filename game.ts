@@ -1,13 +1,11 @@
 import * as readline from "node:readline/promises";
 import { match, P } from "ts-pattern";
-import { read, MoveN } from "./model/move";
-import { Result } from "./model/result";
+import { read, Move } from "./model/move";
 
 export function generateComputerMove() {
   return read(String(Math.round(Math.random() * 2)));
 }
-
-export function playLogic(userMove: MoveN, computerMove: MoveN) {
+export function playLogic(userMove: Move, computerMove: Move) {
   return match([userMove, computerMove])
     .with(
       ["Rock", "Scissors"],

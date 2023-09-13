@@ -1,22 +1,16 @@
-import { match } from "ts-pattern";
 import { z } from "zod";
 
-const MoveNames = z.enum(["Rock", "Paper", "Scissors"]);
-export type MoveN = z.infer<typeof MoveNames>;
+const moves = {
+  0: "Rock",
+  1: "Paper",
+  2: "Scissors",
+} as const;
 
-export const MoveCodes = z.enum(["0", "1", "2"]).transform<MoveN>((val) =>
-  match(val)
-    .returnType<MoveN>()
-    .with("0", () => "Rock")
-    .with("1", () => "Paper")
-    .with("2", () => "Scissors")
-    .exhaustive()
-);
+export const Move = z.enum(["0", "1", "2"]).transform((index) => moves[index]);
+export type Move = z.infer<typeof Move>;
 
-export type MoveC = z.infer<typeof MoveCodes>;
-
-export function read(input: string): MoveN {
-  const res = MoveCodes.safeParse(input);
+export function read(input: string): Move {
+  const res = Move.safeParse(input);
   if (res.success) {
     return res.data;
   } else {

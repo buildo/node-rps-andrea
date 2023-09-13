@@ -1,7 +1,7 @@
 import * as readline from "node:readline/promises";
 import { match, P } from "ts-pattern";
 import { read, Move } from "./model/move";
-import { lastGame, logRes } from "./sql/db";
+import { lastGame, logRes, closeDB } from "./sql/db";
 import { results } from "./model/result";
 
 export function generateComputerMove() {
@@ -47,8 +47,9 @@ export async function play(
   const res = playLogic(userMove, computerMove);
   logRes(res);
 
-  output.write(`You chose:  ${userMove}\nComputer chose:  ${computerMove}\n`);
-  output.write("The result is... " + res + " !\n");
+  rl.write(`You chose:  ${userMove}\nComputer chose:  ${computerMove}\n`);
+  rl.write("The result is... " + res + " !\n");
 
   rl.close();
+  closeDB();
 }

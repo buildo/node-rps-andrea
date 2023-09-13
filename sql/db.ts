@@ -1,7 +1,4 @@
-import pgPromise, {
-  ParameterizedQuery as PQ,
-  PreparedStatement as PS,
-} from "pg-promise";
+import pgPromise, { ParameterizedQuery as PQ } from "pg-promise";
 import { Result } from "../model/result";
 
 const cn = {
@@ -14,7 +11,7 @@ const cn = {
 };
 
 const pgp = pgPromise();
-export const db = pgp(cn);
+const db = pgp(cn);
 
 export async function lastGame(): Promise<Result> {
   return await db.one<Result>(
@@ -25,4 +22,8 @@ export async function lastGame(): Promise<Result> {
 export async function logRes(res: String) {
   const addResult = new PQ("INSERT into results(result) VALUES($1)");
   return await db.none(addResult, [res]);
+}
+
+export function closeDB() {
+  db.$pool.end();
 }

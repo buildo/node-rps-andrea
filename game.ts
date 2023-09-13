@@ -34,6 +34,8 @@ export async function play(
     rl.write(
       "and the game finished with this result : " + lastG.data.result + "\n"
     );
+  } else {
+    rl.write("Welcome to the best RPS game ever! \n");
   }
 
   const userMove = read(

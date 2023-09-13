@@ -3,12 +3,12 @@ import { playLogic } from "./game";
 import { read } from "./model/move";
 
 test("game logic test", () => {
-  expect(playLogic("Rock", "Paper")).toBe("Lose");
-  expect(playLogic("Rock", "Scissors")).toBe("Win");
-  expect(playLogic("Paper", "Rock")).toBe("Win");
-  expect(playLogic("Paper", "Scissors")).toBe("Lose");
-  expect(playLogic("Scissors", "Rock")).toBe("Lose");
-  expect(playLogic("Scissors", "Paper")).toBe("Win");
+  expect(playLogic("Rock", "Paper")).toBe("You lose :< ");
+  expect(playLogic("Rock", "Scissors")).toBe("You Win!!!");
+  expect(playLogic("Paper", "Rock")).toBe("You Win!!!");
+  expect(playLogic("Paper", "Scissors")).toBe("You lose :< ");
+  expect(playLogic("Scissors", "Rock")).toBe("You lose :< ");
+  expect(playLogic("Scissors", "Paper")).toBe("You Win!!!");
 });
 
 test("read function test", () => {

@@ -16,7 +16,7 @@ const cn = {
 const pgp = pgPromise();
 export const db = pgp(cn);
 
-export async function lastGame() {
+export async function lastGame(): Promise<Result> {
   return await db.one<Result>(
     "SELECT log_game, result FROM results ORDER BY log_game DESC LIMIT 1"
   );

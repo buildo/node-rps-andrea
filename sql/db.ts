@@ -1,5 +1,4 @@
 import pgPromise, { ParameterizedQuery as PQ } from "pg-promise";
-import { Result } from "../model/result";
 
 const cn = {
   host: "localhost",

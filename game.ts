@@ -1,4 +1,3 @@
-import * as readline from "node:readline/promises";
 import { match, P } from "ts-pattern";
 import { read, Move } from "./model/move";
 import { lastGame, allGames } from "./sql/db";
@@ -34,12 +33,15 @@ export function playLogic(userMove: Move, computerMove: Move): string {
 
 export async function welcome(): Promise<string[]> {
   const res = ["Wanna play? Your move (0: Rock, 1: Paper, 2: Scissors)"];
-
-  const lastG = results.safeParse(await lastGame());
-  if (lastG.success) {
-    res.push("Our last game timestamp is : " + lastG.data.game_date + "\n");
+  const lastGameParsed = results.safeParse(await lastGame());
+  if (lastGameParsed.success) {
     res.push(
-      "and the game finished with this result : " + lastG.data.result + "\n"
+      "Our last game timestamp is : " + lastGameParsed.data.game_date + "\n"
+    );
+    res.push(
+      "and the game finished with this result : " +
+        lastGameParsed.data.result +
+        "\n"
     );
     return res;
   } else {

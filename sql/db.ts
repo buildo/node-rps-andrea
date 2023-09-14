@@ -13,19 +13,21 @@ const cn = {
 const pgp = pgPromise();
 const db = pgp(cn);
 
-export async function lastGame(): Promise<Result> {
-  return await db.one<Result>(
-    "SELECT log_game, result FROM results ORDER BY log_game DESC LIMIT 1"
+export async function lastGame() {
+  return await db.oneOrNone(
+    "SELECT game_date, result FROM results ORDER BY game_date DESC LIMIT 1"
   );
 }
 
-export async function logRes(res: String) {
+export async function logRes(res: string) {
   const addResult = new PQ("INSERT into results(result) VALUES($1)");
   return await db.none(addResult, [res]);
 }
 
 export async function allGames() {
-  return await db.any("SELECT log_game, result FROM results ORDER BY log_game");
+  return await db.any(
+    "SELECT game_date, result FROM results ORDER BY game_date"
+  );
 }
 
 export function closeDB() {

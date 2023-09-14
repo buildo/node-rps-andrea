@@ -1,8 +1,8 @@
 import * as readline from "node:readline/promises";
 import { match, P } from "ts-pattern";
 import { read, Move } from "./model/move";
-import { lastGame, logRes, closeDB } from "./sql/db";
-import { results } from "./model/result";
+import { lastGame, allGames } from "./sql/db";
+import { Result, resultArray, results } from "./model/result";
 
 export function generateComputerMove() {
   return read(String(Math.round(Math.random() * 2)));
@@ -22,34 +22,27 @@ export function playLogic(userMove: Move, computerMove: Move) {
     .otherwise(() => "You lose :< ");
 }
 
-export async function play(
-  input: NodeJS.ReadableStream,
-  output: NodeJS.WritableStream
-) {
-  const rl = readline.createInterface({ input, output });
-  const computerMove = generateComputerMove();
+export async function welcome(): Promise<String[]> {
+  const res = ["Wanna play? Your move (0: Rock, 1: Paper, 2: Scissors)"];
+
   const lastG = results.safeParse(await lastGame());
   if (lastG.success) {
-    rl.write("Our last game timestamp is : " + lastG.data.log_game + "\n");
-    rl.write(
+    res.push("Our last game timestamp is : " + lastG.data.log_game + "\n");
+    res.push(
       "and the game finished with this result : " + lastG.data.result + "\n"
     );
+    return res;
   } else {
-    rl.write("Welcome to the best RPS game ever! \n");
+    res.push("Welcome to the best RPS game ever! \n");
+    return res;
   }
+}
 
-  const userMove = read(
-    await rl.question(
-      "Wanna play? Your move (0: Rock, 1: Paper, 2: Scissors) \n"
-    )
-  );
-
-  const res = playLogic(userMove, computerMove);
-  logRes(res);
-
-  rl.write(`You chose:  ${userMove}\nComputer chose:  ${computerMove}\n`);
-  rl.write("The result is... " + res + " !\n");
-
-  rl.close();
-  closeDB();
+export async function allGamesParsed(): Promise<Result[]> {
+  const all = resultArray.safeParse(await allGames());
+  if (all.success) {
+    return all.data;
+  } else {
+    return [];
+  }
 }

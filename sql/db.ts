@@ -24,6 +24,10 @@ export async function logRes(res: String) {
   return await db.none(addResult, [res]);
 }
 
+export async function allGames() {
+  return await db.any("SELECT log_game, result FROM results ORDER BY log_game");
+}
+
 export function closeDB() {
   db.$pool.end();
 }

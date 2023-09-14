@@ -6,3 +6,6 @@ export const results = z.object({
 });
 
 export type Result = z.infer<typeof results>;
+
+export const resultArray = z.array(results);
+export type ResultArray = z.infer<typeof resultArray>;

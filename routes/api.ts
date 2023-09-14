@@ -1,16 +1,16 @@
 import { zodiosApp } from "@zodios/express";
 import { makeApi } from "@zodios/core";
 import { z } from "zod";
-import { read } from "./model/move";
+import { read } from "../model/move";
 import {
   welcome,
   generateComputerMove,
   playLogic,
   allGamesParsed,
-} from "./game";
-import { results } from "./model/result";
+} from "../service/game";
+import { results } from "../model/result";
 
-const userApi = makeApi([
+export const apis = makeApi([
   {
     method: "get",
     path: "/welcome",
@@ -45,7 +45,7 @@ const userApi = makeApi([
 ]);
 
 // app is just an express app with type zodios validations
-const app = zodiosApp(userApi);
+export const app = zodiosApp(apis);
 
 app
   .get("/welcome", async (_, res) => {
@@ -76,6 +76,3 @@ app
       })
       .end();
   });
-
-app.listen(3000);
-//play(input, output);

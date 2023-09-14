@@ -1,6 +1,6 @@
 import { expect, test, vi } from "vitest";
 import { playLogic, welcome } from "./game";
-import { read } from "./model/move";
+import { read } from "../model/move";
 
 vi.mock("./sql/db", () => {
   const logRes = vi.fn();

@@ -1,8 +1,8 @@
 import { match, P } from "ts-pattern";
-import { read, Move } from "./model/move";
-import { lastGame, allGames } from "./sql/db";
-import { Result, resultArray, results } from "./model/result";
-import { logRes } from "./sql/db";
+import { read, Move } from "../model/move";
+import { lastGame, allGames } from "../sql/db";
+import { Result, resultArray, results } from "../model/result";
+import { logRes } from "../sql/db";
 
 export function generateComputerMove(): Move {
   return read(String(Math.round(Math.random() * 2)));

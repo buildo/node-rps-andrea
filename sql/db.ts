@@ -1,5 +1,4 @@
 import pgPromise, { ParameterizedQuery as PQ } from "pg-promise";
-import { ResultArray } from "../model/result";
 
 const cn = {
   host: "localhost",
@@ -24,14 +23,10 @@ export async function logRes(res: string) {
   return await db.none(addResult, [res]);
 }
 
-export async function allGames(): Promise<ResultArray | Error> {
-  try {
-    return await db.any(
-      "SELECT game_dates, result FROM results ORDER BY game_date"
-    );
-  } catch (_) {
-    return new Error("No games were played before");
-  }
+export async function allGames(): Promise<any[]> {
+  return await db.any(
+    "SELECT game_date, result FROM results ORDER BY game_date"
+  );
 }
 
 export function closeDB() {

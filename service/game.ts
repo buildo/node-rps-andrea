@@ -50,11 +50,10 @@ export async function welcome(): Promise<string[]> {
 }
 
 export async function allGamesParsed(): Promise<Error | ResultArray> {
-  const allFromDb = await allGames();
-  const all = resultArray.safeParse(allFromDb);
+  const all = resultArray.safeParse(await allGames());
   if (all.success) {
     return all.data;
   } else {
-    return allFromDb;
+    return all.error;
   }
 }

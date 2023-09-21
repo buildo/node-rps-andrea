@@ -1,8 +1,7 @@
 import { match, P } from "ts-pattern";
 import { read, Move } from "../model/move";
-import { lastGame, allGames } from "../sql/db";
-import { Result, resultArray, results } from "../model/result";
-import { logRes } from "../sql/db";
+import { ResultArray, resultArray, results } from "../model/result";
+import { logRes, allGames, lastGame } from "../sql/db";
 
 export function generateComputerMove(): Move {
   return read(String(Math.round(Math.random() * 2)));
@@ -50,11 +49,12 @@ export async function welcome(): Promise<string[]> {
   }
 }
 
-export async function allGamesParsed(): Promise<Result[]> {
-  const all = resultArray.safeParse(await allGames());
+export async function allGamesParsed(): Promise<Error | ResultArray> {
+  const allFromDb = await allGames();
+  const all = resultArray.safeParse(allFromDb);
   if (all.success) {
     return all.data;
   } else {
-    return [];
+    return allFromDb;
   }
 }

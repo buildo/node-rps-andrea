@@ -2,13 +2,14 @@ import { zodiosApp } from "@zodios/express";
 import { makeApi } from "@zodios/core";
 import { z } from "zod";
 import { read } from "../model/move";
+
 import {
   welcome,
   generateComputerMove,
   playLogic,
   allGamesParsed,
 } from "../service/game";
-import { results } from "../model/result";
+import { ResultArray, results } from "../model/result";
 
 export const apis = makeApi([
   {
@@ -59,12 +60,21 @@ app
   })
   .get("/allgames", async (_, res) => {
     const allResults = await allGamesParsed();
-    return res
-      .status(200)
-      .json({
-        game_history: allResults,
-      })
-      .end();
+    if (allResults instanceof Error) {
+      return res
+        .status(404)
+        .json({
+          game_history: allResults.message,
+        })
+        .end();
+    } else {
+      return res
+        .status(200)
+        .json({
+          game_history: allResults,
+        })
+        .end();
+    }
   })
   .post("/play/:move", async (req, res) => {
     const userMove = read(req.params.move);

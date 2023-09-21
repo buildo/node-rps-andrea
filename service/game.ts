@@ -1,38 +1,38 @@
 import { match, P } from "ts-pattern";
 import { read, Move } from "../model/move";
-import { ResultArray, resultArray, results } from "../model/result";
+import { ResultArray, resultArray, result } from "../model/result";
 import { logRes, allGames, lastGame } from "../sql/db";
 
 export function generateComputerMove(): Move {
   return read(String(Math.round(Math.random() * 2)));
 }
-export function playLogic(userMove: Move, computerMove: Move): string {
-  return match([userMove, computerMove])
+export async function playLogic(
+  userMove: Move,
+  computerMove: Move
+): Promise<string> {
+  const outcome: string[] = match([userMove, computerMove])
     .with(
       ["Rock", "Scissors"],
       ["Scissors", "Paper"],
       ["Paper", "Rock"],
-      () => {
-        logRes("WIN");
-        return "You Win!!!";
-      }
+      () => ["WIN", "You Win!!!"]
     )
     .with(
       P.when(() => userMove === computerMove),
-      () => {
-        logRes("DRAW");
-        return "It's a Draw!";
-      }
+      () => ["DRAW", "It's a Draw!"]
     )
-    .otherwise(() => {
-      logRes("LOSE");
-      return "You lose :< ";
-    });
+    .otherwise(() => ["LOSE", "You lose :< "]);
+  const isDbWritten = await logRes(outcome[0]);
+  if (isDbWritten === null) {
+    return outcome[1];
+  } else {
+    return `${outcome[1]} ... but I couldn't save this result because something went wrong`;
+  }
 }
 
 export async function welcome(): Promise<string[]> {
   const res = ["Wanna play? Your move (0: Rock, 1: Paper, 2: Scissors)"];
-  const lastGameParsed = results.safeParse(await lastGame());
+  const lastGameParsed = result.safeParse(await lastGame());
   if (lastGameParsed.success) {
     res.push(
       "Our last game timestamp is : " + lastGameParsed.data.game_date + "\n"

@@ -9,7 +9,7 @@ import {
   playLogic,
   allGamesParsed,
 } from "../service/game";
-import { ResultArray, results } from "../model/result";
+import { ResultArray, result } from "../model/result";
 
 export const apis = makeApi([
   {
@@ -25,7 +25,7 @@ export const apis = makeApi([
     path: "/allgames",
     description: "Get all the past games result and timestamps",
     response: z.object({
-      game_history: z.array(results),
+      game_history: z.array(result),
     }),
   },
   {
@@ -79,10 +79,11 @@ app
   .post("/play/:move", async (req, res) => {
     const userMove = read(req.params.move);
     const computerMove = generateComputerMove();
+    const outcome = await playLogic(userMove, computerMove);
     return res
       .status(200)
       .json({
-        result: playLogic(userMove, computerMove),
+        result: outcome,
       })
       .end();
   });

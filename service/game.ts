@@ -10,7 +10,7 @@ export async function playLogic(
   userMove: Move,
   computerMove: Move
 ): Promise<string> {
-  const outcome: string[] = match([userMove, computerMove])
+  const [dbOutcome, messageOutcome]: string[] = match([userMove, computerMove])
     .with(
       ["Rock", "Scissors"],
       ["Scissors", "Paper"],
@@ -22,11 +22,11 @@ export async function playLogic(
       () => ["DRAW", "It's a Draw!"]
     )
     .otherwise(() => ["LOSE", "You lose :< "]);
-  const isDbWritten = await logRes(outcome[0]);
+  const isDbWritten = await logRes(dbOutcome);
   if (isDbWritten === null) {
-    return outcome[1];
+    return messageOutcome;
   } else {
-    return `${outcome[1]} ... but I couldn't save this result because something went wrong`;
+    return `${messageOutcome} ... but I couldn't save this result because something went wrong`;
   }
 }
 
@@ -49,11 +49,6 @@ export async function welcome(): Promise<string[]> {
   }
 }
 
-export async function allGamesParsed(): Promise<Error | ResultArray> {
-  const all = resultArray.safeParse(await allGames());
-  if (all.success) {
-    return all.data;
-  } else {
-    return all.error;
-  }
+export async function allGamesParsed(): Promise<ResultArray> {
+  return resultArray.parse(await allGames());
 }

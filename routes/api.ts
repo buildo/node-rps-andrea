@@ -59,19 +59,19 @@ app
       .end();
   })
   .get("/allgames", async (_, res) => {
-    const allResults = await allGamesParsed();
-    if (allResults instanceof Error) {
-      return res
-        .status(404)
-        .json({
-          game_history: allResults.message,
-        })
-        .end();
-    } else {
+    try {
+      const allResults = await allGamesParsed();
       return res
         .status(200)
         .json({
           game_history: allResults,
+        })
+        .end();
+    } catch (error) {
+      return res
+        .status(500)
+        .json({
+          game_history: error,
         })
         .end();
     }

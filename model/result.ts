@@ -1,10 +1,10 @@
 import { z } from "zod";
 
-export enum Result {
-  WIN = "You Win!!!",
-  LOSE = "You lose :< ",
-  DRAW = "It's a Draw!",
-}
+export const result = z.object({
+  game_date: z.coerce.date(),
+  result: z.enum(["WIN", "LOSE", "DRAW"]),
+});
 
-const ResultEnum = z.nativeEnum(Result);
-export type ResultEnum = z.infer<typeof ResultEnum>;
+export type Result = z.infer<typeof result>;
+export const resultArray = z.array(result);
+export type ResultArray = z.infer<typeof resultArray>;
